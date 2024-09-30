@@ -1,0 +1,107 @@
+P1:
+
+	Entities and Attributes:
+
+		Theatre-
+			TheatreID (Primary Key)
+			TheatreName
+			Location
+
+		Movie-
+			MovieID (Primary Key)
+			MovieName
+			Genre
+			Duration
+
+		Screen-
+			ScreenID (Primary Key)
+			TheatreID (Foreign Key)
+			ScreenNumber
+			Capacity
+
+		Show-
+			ShowID (Primary Key)
+			MovieID (Foreign Key)
+			ScreenID (Foreign Key)
+			ShowDate
+			ShowTime
+	
+	SQL Queries:
+	
+		Theatre Table-
+			
+			CREATE TABLE Theatre (
+				TheatreID INT AUTO_INCREMENT PRIMARY KEY,
+				TheatreName VARCHAR(100) NOT NULL,
+				Location VARCHAR(100) NOT NULL
+			);
+
+			INSERT INTO Theatre (TheatreName, Location) VALUES
+			('PVR Cinemas', 'Mumbai'),
+			('INOX', 'Pune'),
+			('Cinepolis', 'Delhi');
+
+		Movie Table-
+		
+			CREATE TABLE Movie (
+				MovieID INT AUTO_INCREMENT PRIMARY KEY,
+				MovieName VARCHAR(100) NOT NULL,
+				Genre VARCHAR(50),
+				Duration INT
+			);
+
+			INSERT INTO Movie (MovieName, Genre, Duration) VALUES
+			('Inception', 'Sci-Fi', 148),
+			('Titanic', 'Romance', 195),
+			('Avengers: Endgame', 'Action', 181);
+			
+		Screen Table-
+		
+			CREATE TABLE Screen (
+				ScreenID INT AUTO_INCREMENT PRIMARY KEY,
+				TheatreID INT,
+				ScreenNumber INT NOT NULL,
+				Capacity INT,
+				FOREIGN KEY (TheatreID) REFERENCES Theatre(TheatreID)
+			);
+
+			INSERT INTO Screen (TheatreID, ScreenNumber, Capacity) VALUES
+			(1, 1, 200),
+			(1, 2, 150),
+			(2, 1, 180);
+
+		Show Table-
+		
+			CREATE TABLE Show (
+				ShowID INT AUTO_INCREMENT PRIMARY KEY,
+				MovieID INT,
+				ScreenID INT,
+				ShowDate DATE,
+				ShowTime TIME,
+				FOREIGN KEY (MovieID) REFERENCES Movie(MovieID),
+				FOREIGN KEY (ScreenID) REFERENCES Screen(ScreenID)
+			);
+
+			INSERT INTO Show (MovieID, ScreenID, ShowDate, ShowTime) VALUES
+			(1, 1, '2024-10-01', '18:00:00'),
+			(2, 2, '2024-10-01', '21:00:00'),
+			(3, 3, '2024-10-02', '15:00:00');
+
+P2:
+
+SELECT 
+    s.ShowID,
+    m.MovieName,
+    s.ShowDate,
+    s.ShowTime
+FROM 
+    Show s
+INNER JOIN 
+    Screen sc ON s.ScreenID = sc.ScreenID
+INNER JOIN 
+    Theatre t ON sc.TheatreID = t.TheatreID
+INNER JOIN 
+    Movie m ON s.MovieID = m.MovieID
+WHERE 
+    s.ShowDate = '2024-10-01' AND
+    t.TheatreName = 'PVR Cinemas';
